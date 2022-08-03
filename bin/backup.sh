@@ -44,7 +44,12 @@ else
   echo " --- Skipping database capture"
 fi
 
-curl -o $BACKUP_FILE_NAME `heroku pg:backups:url --app $APP`
+echo "Listing backups"
+heroku pg:backups
+
+echo "Downloading latest backup as $BACKUP_FILE_NAME"
+heroku pg:backups:download --output $BACKUP_FILE_NAME --app $APP
+
 FINAL_FILE_NAME=$BACKUP_FILE_NAME
 
 if [[ -z "$NOGZIP" ]]; then

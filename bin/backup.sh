@@ -45,7 +45,7 @@ else
 fi
 
 echo "Listing backups"
-heroku pg:backups
+heroku pg:backups --app $APP
 
 echo "Downloading latest backup as $BACKUP_FILE_NAME"
 heroku pg:backups:download --output $BACKUP_FILE_NAME --app $APP

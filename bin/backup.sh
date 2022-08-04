@@ -52,12 +52,12 @@ heroku pg:backups:download --output $BACKUP_FILE_NAME --app $APP
 
 FINAL_FILE_NAME=$BACKUP_FILE_NAME
 
-if [[ -z "$NOGZIP" ]]; then
+if [[ -z "${NOGZIP:-}" ]]; then
   gzip $BACKUP_FILE_NAME
   FINAL_FILE_NAME=$BACKUP_FILE_NAME.gz
 fi
 
-if [[ -n "$PG_BACKUP_PASSWORD" ]]; then
+if [[ -n "${PG_BACKUP_PASSWORD:-}" ]]; then
   echo "Encrypting backup..."
   ENCRYPTED_FILE_NAME="${FINAL_IMAGE_NAME}.encrypted"
   gpg --batch --passphrase=$PG_BACKUP_PASSWORD --output $ENCRYPTED_FILE_NAME --symmetric --cipher-algo AES256 $FINAL_FILE_NAME

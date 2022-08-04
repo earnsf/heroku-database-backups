@@ -1,19 +1,19 @@
 #!/bin/bash
 
-# terminate script as soon as any command fails
-set -e
+# terminate script as soon as any command fails, of variable undefined or piped command fails
+set -euo pipefail
 
-if [[ -z "$APP" ]]; then
+if [[ -z "${APP:-}" ]]; then
   echo "Missing APP variable which must be set to the name of your app where the db is located"
   exit 1
 fi
 
-if [[ -z "$DATABASE" ]]; then
+if [[ -z "${DATABASE:-}" ]]; then
   echo "Missing DATABASE variable which must be set to the name of the DATABASE you would like to backup"
   exit 1
 fi
 
-if [[ -z "$S3_BUCKET_PATH" ]]; then
+if [[ -z "${S3_BUCKET_PATH:-}" ]]; then
   echo "Missing S3_BUCKET_PATH variable which must be set the directory in s3 where you would like to store your database backups"
   exit 1
 fi

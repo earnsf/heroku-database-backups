@@ -57,6 +57,16 @@ if [[ -z "$NOGZIP" ]]; then
   FINAL_FILE_NAME=$BACKUP_FILE_NAME.gz
 fi
 
+if [[ -n "$PG_BACKUP_PASSWORD" ]]; then
+  echo "Encrypting backup..."
+  ENCRYPTED_FILE_NAME="${FINAL_IMAGE_NAME}.encrypted"
+  gpg --batch --passphrase=$PG_BACKUP_PASSWORD --output $ENCRYPTED_FILE_NAME --symmetric --cipher-algo AES256 $FINAL_FILE_NAME
+  # You can use the following command to decrypt:
+  # gpg --batch --passphrase=$PG_BACKUP_PASSWORD --output DECRYPTED_OUTPUT_FILE --decrypt ENCRYPTED_INPUT_FILE
+  FINAL_FILE_NAME=$ENCRYPTED_FILE_NAME
+fi
+
+
 ${aws_command} s3 cp $FINAL_FILE_NAME s3://$S3_BUCKET_PATH/$APP/$DATABASE/$FINAL_FILE_NAME
 
 echo "backup $FINAL_FILE_NAME complete"

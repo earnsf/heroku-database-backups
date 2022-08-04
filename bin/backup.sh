@@ -51,16 +51,22 @@ echo "Downloading latest backup as $BACKUP_FILE_NAME"
 heroku pg:backups:download --output $BACKUP_FILE_NAME --app $APP
 
 FINAL_FILE_NAME=$BACKUP_FILE_NAME
+echo Dump file size
+ls -lh $FINAL_FILE_NAME
 
 if [[ -z "${NOGZIP:-}" ]]; then
   gzip $BACKUP_FILE_NAME
   FINAL_FILE_NAME=$BACKUP_FILE_NAME.gz
+  echo Gzipped file size
+  ls -lh $FINAL_FILE_NAME
 fi
 
 if [[ -n "${PG_BACKUP_PASSWORD:-}" ]]; then
   echo "Encrypting backup..."
-  ENCRYPTED_FILE_NAME="${FINAL_IMAGE_NAME}.encrypted"
+  ENCRYPTED_FILE_NAME="${FINAL_FILE_NAME}.encrypted"
   gpg --batch --passphrase=$PG_BACKUP_PASSWORD --output $ENCRYPTED_FILE_NAME --symmetric --cipher-algo AES256 $FINAL_FILE_NAME
+  # Remove unencrypted file
+  rm $FINAL_FILE_NAME
   # You can use the following command to decrypt:
   # gpg --batch --passphrase=$PG_BACKUP_PASSWORD --output DECRYPTED_OUTPUT_FILE --decrypt ENCRYPTED_INPUT_FILE
   FINAL_FILE_NAME=$ENCRYPTED_FILE_NAME

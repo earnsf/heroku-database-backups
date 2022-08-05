@@ -3,6 +3,12 @@
 # terminate script as soon as any command fails, of variable undefined or piped command fails
 set -euo pipefail
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+# Create and use a temp dir which we remove at the end
+TMP_DIR=$SCRIPT_DIR/scratch
+mkdir -p $TMP_DIR
+cd $TMP_DIR
+
 if [[ -z "${APP:-}" ]]; then
   echo "Missing APP variable which must be set to the name of your app where the db is located"
   exit 1
@@ -82,3 +88,7 @@ if [[ -n "$HEARTBEAT_URL" ]]; then
   curl $HEARTBEAT_URL
   echo "heartbeat complete"
 fi
+
+cd $SCRIPT_DIR
+echo "Removing temp files $TMP_DIR"
+rm -rf $TMP_DIR

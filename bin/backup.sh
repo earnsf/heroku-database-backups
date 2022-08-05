@@ -21,9 +21,9 @@ fi
 # install aws-cli
 #  - this will already exist if we're running the script manually from a dyno more than once
 
-aws_command="/tmp/bin/aws"
+PATH=$PATH:/tmp/bin
 
-if [[ ! -f "${aws_command}" ]]; then
+if ! hash aws 2>/dev/null; then
   echo "aws cli v2..."
   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
   unzip -q awscliv2.zip
@@ -73,7 +73,7 @@ if [[ -n "${PG_BACKUP_PASSWORD:-}" ]]; then
 fi
 
 
-${aws_command} s3 cp $FINAL_FILE_NAME s3://$S3_BUCKET_PATH/$APP/$DATABASE/$FINAL_FILE_NAME
+aws s3 cp $FINAL_FILE_NAME s3://$S3_BUCKET_PATH/$APP/$DATABASE/$FINAL_FILE_NAME
 
 echo "backup $FINAL_FILE_NAME complete"
 

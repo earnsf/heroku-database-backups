@@ -16,4 +16,4 @@ COPY bin/backup.sh /app
 
 
 ENTRYPOINT ["bash"]
-CMD	["-c","curl https://hc-ping.com/69fcd8e5-d260-418d-83eb-b93e3fc7231f"]
+CMD	["-c","curl $HEALTHCHECK_URL"]
